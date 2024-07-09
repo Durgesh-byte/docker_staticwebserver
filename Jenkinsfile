@@ -7,6 +7,12 @@ pipeline {
     }
 
     stages {
+        stage('Cleanup') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], 
@@ -14,7 +20,13 @@ pipeline {
                 submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Durgesh-byte/docker_staticwebserver.git']]]) // Update if necessary
             }
         }
-        
+
+        stage('Verify Files') {
+            steps {
+                sh 'ls -l'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -57,4 +69,5 @@ pipeline {
         }
     }
 }
+
 

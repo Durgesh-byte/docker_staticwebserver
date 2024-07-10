@@ -38,10 +38,11 @@ pipeline {
         stage('Test Docker Image') {
             steps {
                 script {
-                    sh 'docker run -d --name test-apache ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                    sh 'docker run -d --name test-apache ${DOCKER_IMAGE}:${DOCKER_TAG} /usr/sbin/apache2ctl -D FOREGROUND'
                     sh 'sleep 10' // Give some time for Apache to start
                     sh 'docker logs test-apache'
                     sh 'docker stop test-apache'
+                    sh 'docker rm test-apache'
                 }
             }
         }
@@ -60,7 +61,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker rm -f my-apache-server || true'
-                    sh 'docker run -d --name my-apache-server -p 200:80 ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                    sh 'docker run -d --name my-apache-server -p 200:80 ${DOCKER_IMAGE}:${DOCKER_TAG} /usr/sbin/apache2ctl -D FOREGROUND'
                 }
             }
         }

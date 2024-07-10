@@ -50,7 +50,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('', 'docker-hub-credentials-id') { // Use the correct Docker Hub credentials ID
+                    docker.withRegistry('', 'd7d8c302-d788-4e99-a6cc-ea2145fb6d85') { // Use the correct Docker Hub credentials ID
                         docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
                     }
                 }

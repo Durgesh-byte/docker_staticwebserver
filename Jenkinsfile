@@ -30,7 +30,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", ".")
                 }
             }
         }
@@ -38,7 +38,10 @@ pipeline {
         stage('Test Docker Image') {
             steps {
                 script {
-                    sh 'docker run --rm ${DOCKER_IMAGE}:${DOCKER_TAG} /bin/bash -c "echo Test Passed!"'
+                    sh 'docker run -d --name test-apache ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                    sh 'sleep 10' // Give some time for Apache to start
+                    sh 'docker logs test-apache'
+                    sh 'docker stop test-apache'
                 }
             }
         }
@@ -46,7 +49,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('', 'docker-hub-credentials-id') { // Update credentials ID
+                    docker.withRegistry('', 'docker-hub-credentials-id') { // Use the correct Docker Hub credentials ID
                         docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
                     }
                 }
@@ -69,5 +72,3 @@ pipeline {
         }
     }
 }
-
-

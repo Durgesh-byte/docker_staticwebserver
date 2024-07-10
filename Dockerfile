@@ -5,13 +5,10 @@ FROM ubuntu:latest
 RUN apt-get update && apt-get install -y apache2
 
 # Copy the file from the current location to the document root
-# Replace 'your-file.html' with the actual file name you want to copy
 COPY myfile.html /var/www/html/
 
-# Expose port 200 for the HTTPD server
-EXPOSE 200
+# Expose port 80 for the HTTPD server
+EXPOSE 80
 
 # Start the HTTPD server
-CMD ["-D", "FOREGROUND"]
-ENTRYPOINT ["/usr/sbin/apache2ctl"]
-
+CMD ["apache2ctl", "-D", "FOREGROUND"]
